@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
@@ -32,9 +36,12 @@ public class DemoApplication {
     }*/
 
     @Bean
-    CommandLineRunner commandLineRunner(AccountService accountService) {
+    CommandLineRunner commandLineRunner(
+            AccountRepository accountRepository ,
+            AccountService accountService) {
         return args -> {
-            accountService.findAll().forEach(System.out::println);
+            accountRepository.findAll().forEach(System.out::println );
+            //accountService.findAll().forEach(System.out::println);
         };
     }
 
@@ -43,6 +50,7 @@ public class DemoApplication {
     }
 }
 
+interface AccountRepository extends JpaRepository<Account,Long> {}
 
 @Service
 class AccountService {
@@ -73,12 +81,14 @@ class GreetingController {
     }
 }
 
-/*
- */
+@Entity
 class Account {
+
+    @Id
+    @GeneratedValue
     private Long id;
 
-    Account() {
+    public Account() {
     }
 
     @Override
@@ -97,8 +107,11 @@ class Account {
         return username;
     }
 
-    public Account(Long id, String username) {
+    public Account(String username) {
+        this.username = username;
+    }
 
+    public Account(Long id, String username) {
         this.id = id;
         this.username = username;
     }
