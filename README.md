@@ -11,13 +11,21 @@ Notes:
 
 Spring provides the `JtaTransactionManager` hierarchy. It handles TX coordination with JTA implementations. The JTA spec provides the `UserTransaction` and optionally the `TransactionManager` interfaces. WebSphere offers oneof the most advanced,powerful TX managers in the business, and it would be a disservice if Spring didn't expose as much of it as possible. The [`WebSphereUowTransactionManager` implementation](https://github.com/spring-projects/spring-framework/blob/master/spring-tx/src/main/java/org/springframework/transaction/jta/WebSphereUowTransactionManager.java)
 
-Spring provides a [`WebSphereMBeanServerFactoryBean`](https://github.com/spring-projects/spring-framework/blob/master/spring-context/src/main/java/org/springframework/jmx/support/WebSphereMBeanServerFactoryBean.java) that obtains a `javax.management.MBeanServer` reference through WebSphere's proprietary `AdminServiceFactory`. This is very convenient for - There are some issues to know about when working with WSL. One is that [the error filter in Boot responds that it can't write to the output because the buffer's been closed](https://github.com/spring-projects/spring-boot/issues/1575). [There's interesting advice on how to fix it here](http://www-01.ibm.com/support/knowledgecenter/SSZH4A_6.2.0/com.ibm.worklight.deploy.doc/admin/t_configuring_websphere_application_server_manually.html). The error looks like this:
+Spring provides a [`WebSphereMBeanServerFactoryBean`](https://github.com/spring-projects/spring-framework/blob/master/spring-context/src/main/java/org/springframework/jmx/support/WebSphereMBeanServerFactoryBean.java) that obtains a `javax.management.MBeanServer` reference through WebSphere's proprietary `AdminServiceFactory`. This is very convenient for exporting JMX ManagedBeans through WebSphere's JMX support. 
+
+There are some issues to know about when working with WSL. One is that [the error filter in Boot responds that it can't write to the output because the buffer's been closed](https://github.com/spring-projects/spring-boot/issues/1575). The error looks like this:
 
 ```sh
 2015-02-06 15:47:35.358 ERROR 13897 --- [ecutor-thread-1] o.s.boot.context.web.ErrorPageFilter     : Cannot forward to error page for request [/] as the response has already been committed. As a result, the response may have the wrong status code. If your application is running on WebSphere Application Server you may be able to resolve this problem by setting com.ibm.ws.webcontainer.invokeFlushAfterService to false
 ```
 
-Create a custom server to isolate your application: `> bin ./server create boot --template="defaultServer"`. This will create a directory structure, like this: `$WEBSHERE_ROOT/wlp/usr/servers/boot`. There, you can find a configuration file, [`server.xml`](http://www-01.ibm.com/support/knowledgecenter/SSEQTP_8.5.5/com.ibm.websphere.wlp.doc/autodita/rwlp_metatype_4ic.html?cp=SSEQTP_8.5.5%2F1-0-2-1-0).
+Create a custom server to isolate your application: 
+
+```sh 
+> bin ./server create boot --template="defaultServer" 
+``` 
+
+This will create a directory structure, like this: `$WEBSHERE_ROOT/wlp/usr/servers/boot`. There, you can find a configuration file, [`server.xml`](http://www-01.ibm.com/support/knowledgecenter/SSEQTP_8.5.5/com.ibm.websphere.wlp.doc/autodita/rwlp_metatype_4ic.html?cp=SSEQTP_8.5.5%2F1-0-2-1-0).
 
 My `server.xml` looks like this:
 
