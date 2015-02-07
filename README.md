@@ -63,9 +63,14 @@ My `server.xml` looks like this:
 
 ```
 
-[Configuring and consuming a JDBC `DataSource`](http://jaceklaskowski.pl/wiki/Connecting_Java_EE_application_to_MySQL_in_WebSphere_Application_Server_V8.5_Liberty_Profile) from a Spring Boot application is easy with Boot's JNDI-based access.
+[Configuring and consuming a JDBC `DataSource`](http://jaceklaskowski.pl/wiki/Connecting_Java_EE_application_to_MySQL_in_WebSphere_Application_Server_V8.5_Liberty_Profile) from a Spring Boot application is easy with Boot's JNDI-based access. See `application.properties` for an example of how we wire up the WS JNDI-bound `DataSource`. This could be taken further with Spring profiles: e.g.: profile `ws` uses `application-ws.properties`, and locally you can use `application-default.properties` to embed a local `DataSource`.  
+
+If you have the JTA types on the `CLASSPATH`, Spring Boot will attempt to wire up a valid `JtaTransactionManager` for you automcatically.
+
+Using custom implemenations of Java EE specifications in WS requires configuring the WS AS to use web module `ClassLoader` specific dependencies _before_ using the parent ones. For example, to prefer Spring Boot's support for Hibernate over Apache OpenJPA, you'd need to specify `parent last`. I'm not sure how to do that, yet, in `server.xml` or otherwise without creating a shared library.
 
 References
 ----------
 
 -	[Deploying Spring Boot applications in IBM WebSphere Liberty Application Server](http://naruraghavan.github.io/deploying-spring-boot-applications-in-ibm-websphere-application-server/) -
+-	[You can deploy and manage WSL on Cloud Foundry using the  IBM BuildPack](https://github.com/cloudfoundry/ibm-websphere-liberty-buildpack)	
