@@ -69,3 +69,4 @@ References
 ----------
 
 -	[Deploying Spring Boot applications in IBM WebSphere Liberty Application Server](http://naruraghavan.github.io/deploying-spring-boot-applications-in-ibm-websphere-application-server/) -
+-	[You can deploy and manage WSL on Cloud Foundry using the  IBM BuildPack](https://github.com/cloudfoundry/ibm-websphere-liberty-buildpack)	
